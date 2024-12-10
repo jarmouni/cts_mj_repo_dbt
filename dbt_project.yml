@@ -36,11 +36,7 @@ clean-targets:         # directories to be removed by `dbt clean`
 # using the `{{ config(...) }}` macro.
 vars:
   vcity: "'Madrid'"
-  dbt_dq_tool_schema:  "{{env_var('DBT_AUDITSCHEMA','AUDIT_DEV')}}"
-  dq_tools_enable_store_test_results: True
 
-#on-run-start: "use warehouse loading_wh;"
-on-run-end:   "{{ dq_tools.store_test_results(results) }}"
 
 seeds: 
   schema: LKPDATA  
@@ -51,7 +47,3 @@ models:
     - "insert into {{env_var('DBT_SOURCEDB','QWTANALYTICS_DEV')}}.{{env_var('DBT_AUDIT','AUDIT_DEV')}}.qwt_models_auditinfo(modelname, starttime, endtime, duration) values ('{{this}}', current_timestamp(), null, null);"
   +post-hook:
     - "update {{env_var('DBT_AUDITSCHEMA','AUDIT_DEV')}}.qwt_models_auditinfo set endtime = current_timestamp(), duration = datediff('second', starttime, current_timestamp()) where modelname= '{{this}}' and endtime is null;"
-
-  dq_tools:
-    # +database: 
-    +schema: "{{env_var('DBT_AUDITSCHEMA','AUDIT_DEV')}}" 
