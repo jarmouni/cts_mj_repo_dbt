@@ -44,6 +44,6 @@ seeds:
 models:
 
   +pre-hook:
-    - "insert into {{env_var('DBT_SOURCEDB','QWTANALYTICS_DEV')}}.{{env_var('DBT_AUDIT','AUDIT_DEV')}}.qwt_models_auditinfo(modelname, starttime, endtime, duration) values ('{{this}}', current_timestamp(), null, null);"
+    - "insert into {{env_var('DBT_SOURCEDB','QWTANALYTICS_DEV')}}.{{env_var('DBT_AUDITSCHEMA','AUDIT_DEV')}}.qwt_models_auditinfo(modelname, starttime, endtime, duration) values ('{{this}}', current_timestamp(), null, null);"
   +post-hook:
     - "update {{env_var('DBT_AUDITSCHEMA','AUDIT_DEV')}}.qwt_models_auditinfo set endtime = current_timestamp(), duration = datediff('second', starttime, current_timestamp()) where modelname= '{{this}}' and endtime is null;"
